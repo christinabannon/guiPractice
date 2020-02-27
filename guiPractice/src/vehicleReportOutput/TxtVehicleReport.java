@@ -4,9 +4,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import java.util.Date;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import storage.Vehicle;
@@ -31,7 +33,6 @@ public class TxtVehicleReport {
 		
 		try {
 			fileWriter = new FileWriter(txtReport);
-//			bufferedWriter = new BufferedWriter();
 		} catch (IOException E) {
 			E.printStackTrace();
 		}
@@ -45,6 +46,20 @@ public class TxtVehicleReport {
 		return formatter.format(date);
 		
 	}
+	
+	private String cashFormatMSRP(Vehicle vehicle) {
+		DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
+		String msrp = "MSRP: $" + decimalFormat.format(vehicle.getMSRP());
+		return msrp;
+	}
+	
+	private String cashFormatListPrice(Vehicle vehicle) {
+		BigDecimal listPriceBD = vehicle.getMSRP().multiply( new BigDecimal(1.07));
+		DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
+		String listPrice = "List Price: $" + decimalFormat.format(listPriceBD);
+		return listPrice;
+	}
+	
 	// methods for what to write to file
 	private void writeReport() {
 		
@@ -58,7 +73,23 @@ public class TxtVehicleReport {
 			
 			// maybe v2 figure out how to determine max possible line length
 			// to align right
-			sb.append(String.format("%-15s %50s", "--Vehicle Report--", "Date: " + getFormattedDate() ));
+			sb.append(String.format("%s %50s %n", "--Vehicle Report--", "Date: " + getFormattedDate() ));
+			String make = null;
+			String model = null; 
+			String msrp = null;
+			String listPrice = null;
+			for (int year = 1997; year < 2000; year++) {
+				sb.append(String.format(" %d %n", year ));
+				for (int numCars = 0; numCars < vehicles.size(); numCars++) {
+					make = vehicles.get(numCars).getMake();
+					model = vehicles.get(numCars).getModel();
+					msrp = cashFormatMSRP(vehicles.get(numCars));
+					listPrice = cashFormatListPrice(vehicles.get(numCars));
+					
+					sb.append(String.format("%10s %-15s %-15s %-30s %-15s %n","", make, model, msrp, listPrice));
+				}
+				sb.append(String.format("%n"));
+			}
 //		    sb.append(String.format("%s %50s%n", "A", "Monthly Report"));
 //		    sb.append(String.format("%s %48s%n", "A", "Report Name"));
 //		    sb.append(String.format("%s %n", "A"));
@@ -74,5 +105,6 @@ public class TxtVehicleReport {
 		}
 		
 	}
+	
 
 }

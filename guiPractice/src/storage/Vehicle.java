@@ -24,11 +24,21 @@ public class Vehicle {
 	
 	public Vehicle(int year, String make, String model, BigDecimal msrp) {
 		this.year = year; 
-		this.make = make; 
-		this.model = model; 
+		this.make = cleanMake(make);//make.substring(0,1).toUpperCase() + make.substring(1).toLowerCase();
+		this.model = model.substring(0,1).toUpperCase() + model.substring(1).toLowerCase();//cleanModel(model);
 		this.msrp = msrp; 
 	}
+
+	private String cleanMake(String make) {
+		String cleanMake = make.trim().replaceAll("[^a-zA-Z]", "");
+		return cleanMake.substring(0,1).toUpperCase() + cleanMake.substring(1).toLowerCase();
+	}
 	
+	private String cleanModel(String model) {
+		String cleanModel = model.trim().replaceAll("^[a-zA-Z0-9|-]", "");
+		return cleanModel.substring(0,1).toUpperCase() + cleanModel.substring(1).toLowerCase();
+	}
+
 	public int getYear() {
 		return year; 
 	}

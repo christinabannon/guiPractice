@@ -3,30 +3,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import sorter.CSVSorter;
 import vehicleReportOutput.TxtVehicleReport;
 
 public class VehicleDemo {
 	public static void main(String [] args) {
 		
 		File file = new File("/Users/christinabannon/FileFolder/Vehicles.csv");
-		ArrayList<Vehicle> vehicles = null;
-		try {
-			VehicleCSVInput vehicleCSVInput = new VehicleCSVInput(file);
-			vehicles = vehicleCSVInput.processCSV(); 
-			for (Vehicle vehicle : vehicles) {
-				System.out.println("Year : " + vehicle.getYear());
-				System.out.println("Make : " + vehicle.getMake());
-				System.out.println("Model : " + vehicle.getModel());
-				System.out.println("MSRP : " + vehicle.getMSRP());
-			}
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		ArrayList<Vehicle> vehicles = readCSVFile(file);
+		vehicles = sortList(vehicles);
 		
 		String pathName = getFilePath(file);
 		System.out.println(pathName);
 		TxtVehicleReport txtReport = 
-				new TxtVehicleReport(vehicles, pathName, "fileName.txt");
+				new TxtVehicleReport(vehicles, pathName, "V1Report.txt");
 	}
 	
 	public static String getFilePath(File file) {
@@ -38,5 +28,23 @@ public class VehicleDemo {
 		
 		return pathName; 
 	}
-
+	
+	public static ArrayList <Vehicle> readCSVFile(File file) {
+		ArrayList<Vehicle> vehicles = null;
+		
+		try {
+			VehicleCSVInput vehicleCSVInput = new VehicleCSVInput(file);
+			vehicles = vehicleCSVInput.processCSV(); 
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		
+		return vehicles; 
+	}
+	
+	public static ArrayList<Vehicle> sortList(ArrayList<Vehicle> vehicles) {
+		CSVSorter csvSorter = new CSVSorter(); 
+		vehicles = csvSorter.order(vehicles);
+		return vehicles;
+	}
 }

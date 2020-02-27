@@ -55,5 +55,5 @@ public class VehicleCSVInput {
 			vehicle = null; 
 		}
 		return vehicle;		
-	}	
+	}
 }
