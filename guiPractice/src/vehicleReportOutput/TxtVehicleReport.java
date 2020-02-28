@@ -73,7 +73,7 @@ public class TxtVehicleReport {
 			
 			// maybe v2 figure out how to determine max possible line length
 			// to align right
-			sb.append(String.format("%s %50s %n", "--Vehicle Report--", "Date: " + getFormattedDate() ));
+			sb.append(String.format(" %s %50s %n", "--Vehicle Report--", "Date: " + getFormattedDate() ));
 			String make = null;
 			String model = null; 
 			String msrp = null;
@@ -86,7 +86,8 @@ public class TxtVehicleReport {
 					msrp = cashFormatMSRP(vehicles.get(numCars));
 					listPrice = cashFormatListPrice(vehicles.get(numCars));
 					
-					sb.append(String.format("%10s %-15s %-15s %-30s %-15s %n","", make, model, msrp, listPrice));
+					sb.append(String.format("%10s %-15s %-15s %-30s %-15s %n",vehicles.get(numCars).getYear(),
+							make, model, msrp, listPrice));
 				}
 				sb.append(String.format("%n"));
 			}

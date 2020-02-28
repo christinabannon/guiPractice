@@ -2,8 +2,7 @@ package storage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
-import sorter.CSVSorter;
+import sorter.SortVehicles;
 import vehicleReportOutput.TxtVehicleReport;
 
 public class VehicleDemo {
@@ -19,13 +18,12 @@ public class VehicleDemo {
 				new TxtVehicleReport(vehicles, pathName, "V1Report.txt");
 	}
 	
+	
 	public static String getFilePath(File file) {
-
 		String absolutePath = file.getAbsolutePath();
 		String fileName = file.getName();
 		String pathName = 
 				absolutePath.substring(0, (absolutePath.length() - fileName.length()));
-		
 		return pathName; 
 	}
 	
@@ -43,8 +41,8 @@ public class VehicleDemo {
 	}
 	
 	public static ArrayList<Vehicle> sortList(ArrayList<Vehicle> vehicles) {
-		CSVSorter csvSorter = new CSVSorter(); 
-		vehicles = csvSorter.order(vehicles);
+		SortVehicles sortVehicles = new SortVehicles();
+		sortVehicles.sort(vehicles);
 		return vehicles;
 	}
 }
