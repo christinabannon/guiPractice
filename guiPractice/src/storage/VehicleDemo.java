@@ -15,9 +15,8 @@ public class VehicleDemo {
 		String pathName = getFilePath(file);
 		System.out.println(pathName);
 		TxtVehicleReport txtReport = 
-				new TxtVehicleReport(vehicles, pathName, "V1Report.txt");
+				new TxtVehicleReport(vehicles, pathName, "V1Report2.txt");
 	}
-	
 	
 	public static String getFilePath(File file) {
 		String absolutePath = file.getAbsolutePath();

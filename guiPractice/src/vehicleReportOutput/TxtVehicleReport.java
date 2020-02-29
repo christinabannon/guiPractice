@@ -21,91 +21,97 @@ import storage.Vehicle;
  * 
  */
 public class TxtVehicleReport {
-	
-	ArrayList <Vehicle> vehicles = new ArrayList<>();  
+
 	File txtReport = null;
 	FileWriter fileWriter = null;
 	BufferedWriter bufferedWriter = null; 
-	
+
 	public TxtVehicleReport(ArrayList<Vehicle> vehicles, String pathName, String fileName) {
 		txtReport = new File(pathName, fileName);
-		this.vehicles = vehicles;
-		
+
 		try {
 			fileWriter = new FileWriter(txtReport);
 		} catch (IOException E) {
 			E.printStackTrace();
 		}
-		
-		writeReport();
+
+		String report = createReport(vehicles);
+		writeReport(report);
 	}
-	
+
 	private String getFormattedDate() {
 		Date date = new Date(); 
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 		return formatter.format(date);
-		
+
 	}
-	
-	private String cashFormatMSRP(Vehicle vehicle) {
+
+	private String cashFormatBigDecimal(BigDecimal bigDecimal) {
 		DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
-		String msrp = "MSRP: $" + decimalFormat.format(vehicle.getMSRP());
-		return msrp;
+		return decimalFormat.format(bigDecimal);
 	}
-	
-	private String cashFormatListPrice(Vehicle vehicle) {
-		BigDecimal listPriceBD = vehicle.getMSRP().multiply( new BigDecimal(1.07));
-		DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
-		String listPrice = "List Price: $" + decimalFormat.format(listPriceBD);
-		return listPrice;
+
+	private BigDecimal msrpToListPrice (BigDecimal msrp) {
+		return msrp.multiply(new BigDecimal(1.07));
 	}
-	
+
 	// methods for what to write to file
-	private void writeReport() {
+	private String createReport(ArrayList<Vehicle> vehicles) {
+
+		String make = null;
+		String model = null; 
+		String msrp = null;
+		String listPrice = null;
+		int vehicleIndex = 0; 
+		int year = 0;
+		BigDecimal msrpSum = new BigDecimal(0);
+		Vehicle currentVehicle = null; 
+		StringBuilder stringBuilder = new StringBuilder(); 
+
+		stringBuilder.append(" -- Vehicle Report -- ");
+		stringBuilder.append(String.format(" %70s", "Date: " + getFormattedDate()));
+
+		while (vehicleIndex < vehicles.size()) {
+			currentVehicle = vehicles.get(vehicleIndex);
+
+			if (year != currentVehicle.getYear()) {
+				stringBuilder.append(String.format("%n"));
+				year = currentVehicle.getYear();
+				stringBuilder.append(String.format(" %d %n", year ));
+			}
+			make = currentVehicle.getMake();
+			model = currentVehicle.getModel();
+			msrp = "MSRP: $" + cashFormatBigDecimal(currentVehicle.getMSRP());
+			listPrice = "List Price: $" + 
+					cashFormatBigDecimal(msrpToListPrice(currentVehicle.getMSRP()));
+			stringBuilder.append(String.format("%10s %-15s %-15s %-30s %-15s %n", 
+					"", make, model, msrp, listPrice));
+
+			msrpSum = msrpSum.add(currentVehicle.getMSRP());
+			vehicleIndex++;
+		}
+
+		stringBuilder.append(String.format("%n %n %s %n", " -- Grand Total -- "));
+		stringBuilder.append(String.format(" %10s %s %n", "", "MSRP: $" + cashFormatBigDecimal(msrpSum)));
+		stringBuilder.append(String.format(" %10s %s %n", "", 
+				"List Price: $" + cashFormatBigDecimal(msrpToListPrice(msrpSum))));
 		
-		StringBuilder sb = new StringBuilder(); 
+		make = null;
+		model = null; 
+		msrp = null; 
+		listPrice = null; 
+		msrpSum = null; 
+		currentVehicle = null; 
+		
+		return stringBuilder.toString();
+	}
+	
+	private void writeReport(String report) {
 		try {
-			/*
-			for (Vehicle vehicle : vehicles) {
-				stringBuilder.append
-			}
-			*/
-			
-			// maybe v2 figure out how to determine max possible line length
-			// to align right
-			sb.append(String.format(" %s %50s %n", "--Vehicle Report--", "Date: " + getFormattedDate() ));
-			String make = null;
-			String model = null; 
-			String msrp = null;
-			String listPrice = null;
-			for (int year = 1997; year < 2000; year++) {
-				sb.append(String.format(" %d %n", year ));
-				for (int numCars = 0; numCars < vehicles.size(); numCars++) {
-					make = vehicles.get(numCars).getMake();
-					model = vehicles.get(numCars).getModel();
-					msrp = cashFormatMSRP(vehicles.get(numCars));
-					listPrice = cashFormatListPrice(vehicles.get(numCars));
-					
-					sb.append(String.format("%10s %-15s %-15s %-30s %-15s %n",vehicles.get(numCars).getYear(),
-							make, model, msrp, listPrice));
-				}
-				sb.append(String.format("%n"));
-			}
-//		    sb.append(String.format("%s %50s%n", "A", "Monthly Report"));
-//		    sb.append(String.format("%s %48s%n", "A", "Report Name"));
-//		    sb.append(String.format("%s %n", "A"));
-//		    sb.append(String.format("%s %-20s %-20s %-20s%n", "A", "Category", "Quantity", "Price"));
-//		    sb.append(String.format("%s %-20s %-20s %-20s%n", "A", 
-//		    		"--------------", "--------------", "--------------"));
-//		    sb.append(String.format("%s %-20s %-20s %-20s%n", "B", "Paper", 100, "$200"));
-		    fileWriter.write(sb.toString());
-		    
+			fileWriter.write(report);
 			fileWriter.close();
 		} catch (Exception E) {
 			E.printStackTrace();
 		}
-		
 	}
-	
-
 }

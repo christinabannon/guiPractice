@@ -23,7 +23,7 @@ import storage.VehicleCSVInput;
 import javafx.stage.Stage;
 
 public class CSVFileChooser extends Application {
-	private Desktop desktop = Desktop.getDesktop();
+//	private Desktop desktop = Desktop.getDesktop();
 	
 	@Override
 	public void start(final Stage stage) {
@@ -54,7 +54,7 @@ public class CSVFileChooser extends Application {
 		
 		final Pane rootGroup = new VBox(12);
 		rootGroup.getChildren().addAll(inputGridPane);
-		rootGroup.setPadding(new Insets(12, 12, 12, 12));
+		rootGroup.setPadding(new Insets(20, 30, 20, 30));
 		
 		stage.setScene(new Scene(rootGroup));
 		stage.show();
