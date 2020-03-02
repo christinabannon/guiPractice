@@ -43,14 +43,16 @@ public class VehicleCSVInput {
 
 	private Vehicle stringToVehicle(String line) {
 		String [] csvLine = line.split(",");
-		Vehicle vehicle;
+		Vehicle vehicle = null; 
 		try {
 			// this will need to change with the gui
+			if (csvLine.length == 4) {
 			int year = Integer.parseInt(csvLine[0]);
 			String make = csvLine[1];
 			String model = csvLine[2];
 			BigDecimal msrp = new BigDecimal(csvLine[3]);
 			vehicle = new Vehicle(year, make, model, msrp);
+			}
 		} catch (NumberFormatException e) {
 			vehicle = null; 
 		}
